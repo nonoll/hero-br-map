@@ -14,7 +14,7 @@ export interface IKakaoMapParams {
 
 const KakaoMap = ({
   apiKey,
-  mapStyle = { width: '100%', height: '350px' },
+  mapStyle = { width: '100%', height: '400px' },
   markerList = [],
   markerClick = noop,
   displayMarker = null
@@ -22,25 +22,26 @@ const KakaoMap = ({
   const mapRef = React.createRef<HTMLDivElement>();
   const [isReady, setReady] = useState(false);
   const [map, setMap] = useState(null);
+  const [mapClusterer, setMapClusterer] = useState<any>(null);
   const [mapMarker, setMapMarker] = useState<any[]>([]);
 
   const setMapDisplay = ({ marker, data, index, lat, lng }: any) => {
-    if (!lat && !lng) {
+    if (!marker && !lat && !lng) {
       alert('위도/경도 정보가 없습니다.');
       return;
     }
     if (marker) {
       // @ts-ignore
-      map.setCenter(marker.getPosition());
-      // @ts-ignore
       map.setLevel(4);
+      // @ts-ignore
+      map.setCenter(marker.getPosition());
       markerClick({ marker, data, index });
     } else {
       const kakaoMap = (window as any).kakao.maps;
       // @ts-ignore
-      map.setCenter(new kakaoMap.LatLng(parseFloat(lat), parseFloat(lng)));
-      // @ts-ignore
       map.setLevel(4);
+      // @ts-ignore
+      map.setCenter(new kakaoMap.LatLng(parseFloat(lat), parseFloat(lng)));
       markerClick({ data, index });
     }
   }
@@ -74,14 +75,13 @@ const KakaoMap = ({
       const kakaoMap = (window as any).kakao.maps;
       const markerSize = new kakaoMap.Size(24, 35);
       const markerImage = new kakaoMap.MarkerImage(markerSrc, markerSize); 
-      const markers: any[] = [];
-
-      markerList.forEach(item => {
+      const markers: any[] = markerList.map(item => {
         const { name: title, lat, lng } = item;
         const position = new kakaoMap.LatLng(parseFloat(lat), parseFloat(lng));
         const marker = new kakaoMap.Marker({ map, position, title, image: markerImage });
-        markers.push(marker);
+        return marker;
       });
+      mapClusterer.addMarkers(markers);
 
       setMapMarker(markers);
     }
@@ -92,9 +92,19 @@ const KakaoMap = ({
       const kakaoMap = (window as any).kakao.maps;
       const options = {
         center: new kakaoMap.LatLng(37.5642135, 127.0016985),
-        level: 6
+        level: 14
       };
       const map = new kakaoMap.Map(mapRef.current, options);
+      const zoomControl = new kakaoMap.ZoomControl();
+      map.addControl(zoomControl, kakaoMap.ControlPosition.RIGHT);
+
+      const clusterer = new kakaoMap.MarkerClusterer({
+        map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+        minLevel: 8 // 클러스터 할 최소 지도 레벨 
+      });
+      setMapClusterer(clusterer);
+
       setMap(map);
     }
   }, [isReady]);

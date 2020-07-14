@@ -16,19 +16,11 @@ const DOMESTIC_SHEET_API = REACT_APP_GOOGLE_SHEET_API.replace(REACT_APP_GOOGLE_S
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
+    minWidth: 275
   },
   title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
+    fontSize: 14
+  }
 });
 
 const callFetch = async (uri: string) => {
@@ -108,9 +100,9 @@ const MapContainer = () => {
     <div style={{ padding: '16px' }}>
       {selected &&
         <Card className={classes.root} variant="outlined">
-          <CardContent>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>{selected.name}</Typography>
-            <Typography component="h2">{selected.address}</Typography>
+          <CardContent style={{ paddingBottom: 16 }}>
+            <Typography className={classes.title} color="textSecondary" gutterBottom>{selected.address}</Typography>
+            <Typography component="h2">{selected.name}</Typography>
           </CardContent>
         </Card>
       }
