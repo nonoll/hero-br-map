@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and FirebaseDeploy
 on:
   push:
     branches:
@@ -12,9 +12,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
       - name: Build
-        run: npm run build-prod
+        run: yarn run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
