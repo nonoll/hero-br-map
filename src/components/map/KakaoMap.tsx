@@ -26,7 +26,7 @@ const KakaoMap = ({
   const [mapMarker, setMapMarker] = useState<any[]>([]);
 
   const setMapDisplay = ({ marker, data, index, lat, lng }: any) => {
-    if (!marker && !lat && !lng) {
+    if (!marker && (!parseFloat(lat) || !parseFloat(lng))) {
       alert('위도/경도 정보가 없습니다.');
       return;
     }

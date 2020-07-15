@@ -48,6 +48,10 @@ const MapContainer = () => {
   }
 
   const handleRowClick = (e: any, row: any) => {
+    if (!parseFloat(row.lat) || !parseFloat(row.lng)) {
+      alert('위도/경도 정보가 없습니다.');
+      return;
+    }
     setDisplayMarker({ ...row, data: row });
   }
 
